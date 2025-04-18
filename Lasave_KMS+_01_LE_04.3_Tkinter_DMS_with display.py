@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkfont
 from tkinter import ttk, messagebox, simpledialog
 from datetime import datetime, date
 import re
@@ -120,6 +121,32 @@ def register_user():
 
     tk.Button(register_win, text="Submit", command=submit).grid(row=6, columnspan=2, pady=10)
 
+#  return a list of the maximum length of each field to format the printed data neatly.  this will take
+#  all the user data strings and return a list of field lengths for each field
+
+def get_field_lengths (user_list):
+
+    max_field_lengths = [0, 0, 0, 0, 0, 0]
+
+    for user in user_list:
+        # Split the string by comma
+
+        # Update the max length for each field
+        for i in range(6):
+            field_length = len(user[i])
+            if field_length > max_field_lengths[i]:
+                max_field_lengths[i] = field_length
+
+    return max_field_lengths
+
+def get_formatted_user (user, max_field_lengths):
+
+    for i in range (len(user)):
+        user[i] = user[i].ljust(max_field_lengths[i])
+
+    formatted_field = "  ".join (user)
+
+    return formatted_field
 
 def search_users():
     def perform_search():
@@ -133,24 +160,25 @@ def search_users():
 
         users = read_users()
         current_month = datetime.now().strftime("%m")
+        max_field_lengths = get_field_lengths(users)
 
         for user in users:
             if criteria == "name" and search_term in user[0].lower():
-                print_string = '    '.join(user)  # format user data for printing
+                print_string = get_formatted_user(user, max_field_lengths)  # format user data for printing
                 results.insert(tk.END, print_string)
             elif criteria == "birth_month" and user[2].split('/')[1] == search_term.zfill(2):
-                print_string = '    '.join(user)  # format user data for printing
+                print_string = get_formatted_user(user, max_field_lengths)
                 results.insert(tk.END, print_string)
             elif criteria == "town" and search_term in user[4].lower():
-                print_string = '    '.join(user)  # format user data for printing
+                print_string = get_formatted_user(user, max_field_lengths)
                 results.insert(tk.END, print_string)
             elif criteria == "current_month" and user[2].split('/')[1] == current_month:
-                print_string = '    '.join(user)  # format user data for printing
+                print_string = get_formatted_user (user, max_field_lengths)
                 birthday_string = get_birthday_string (user[2])
-                print_string = print_string + birthday_string
+                print_string = print_string + "  " + birthday_string
                 results.insert(tk.END, print_string)
             elif criteria == "all_users":
-                print_string = '    '.join(user)  # format user data for printing
+                print_string = get_formatted_user(user, max_field_lengths)
                 results.insert(tk.END, print_string)
 
     search_win = tk.Toplevel()
@@ -164,11 +192,11 @@ def search_users():
     ttk.Radiobutton(search_win, text="Show All Users", variable=criteria_button, value="all_users").pack(anchor='w')
 
     entry = tk.Entry(search_win)
-    entry.pack(pady=5)
+    entry.pack(pady=15,anchor='w')
 
-    tk.Button(search_win, text="Search", command=perform_search).pack()
-    results = tk.Listbox(search_win, width=150)
-    results.pack(pady=10)
+    tk.Button(search_win, text="Search", command=perform_search).pack(anchor='w')
+    results = tk.Listbox(search_win, width=150,font="TkFixedFont")
+    results.pack(pady=15,anchor='w')
 
 def get_birthday_string (birthday_data):
 
