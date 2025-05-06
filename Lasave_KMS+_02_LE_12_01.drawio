@@ -1,0 +1,51 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
+  <diagram name="ER-Modell Shop_DB_Lasave" id="YP1yBuz0X1nIIggcvJVC">
+    <mxGraphModel dx="786" dy="524" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-1" value="Kunden" style="shape=swimlane;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-2" value="kunden_id (PK)&#xa;vorname&#xa;nachname&#xa;strasse&#xa;hausnummer&#xa;postleitzahl&#xa;stadt&#xa;telefonnummer&#xa;email" style="text" vertex="1" parent="CvKawGYY-KR4pPFnsuOC-1">
+          <mxGeometry y="20" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-3" value="Lieferanten" style="shape=swimlane;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="580" y="40" width="160" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-4" value="lieferanten_id (PK)&#xa;name&#xa;strasse&#xa;hausnummer&#xa;postleitzahl&#xa;stadt&#xa;telefonnummer&#xa;email" style="text" vertex="1" parent="CvKawGYY-KR4pPFnsuOC-3">
+          <mxGeometry y="20" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-5" value="Artikel" style="shape=swimlane;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-6" value="artikel_id (PK)&#xa;lieferanten_id (FK)&#xa;bezeichnung&#xa;beschreibung&#xa;preis&#xa;lagerbestand" style="text" vertex="1" parent="CvKawGYY-KR4pPFnsuOC-5">
+          <mxGeometry y="20" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-7" value="Verkauf" style="shape=swimlane;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-8" value="verkauf_id (PK)&#xa;kunden_id (FK)&#xa;artikel_id (FK)&#xa;menge&#xa;datum" style="text" vertex="1" parent="CvKawGYY-KR4pPFnsuOC-7">
+          <mxGeometry y="20" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;endArrow=ERoneToMany;endFill=0;" edge="1" parent="1" source="CvKawGYY-KR4pPFnsuOC-1" target="CvKawGYY-KR4pPFnsuOC-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.875;entryY=-0.013;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=ERoneToMany;endFill=0;" edge="1" parent="1" source="CvKawGYY-KR4pPFnsuOC-6" target="CvKawGYY-KR4pPFnsuOC-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CvKawGYY-KR4pPFnsuOC-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.587;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=ERoneToMany;endFill=0;" edge="1" parent="1" source="CvKawGYY-KR4pPFnsuOC-4" target="CvKawGYY-KR4pPFnsuOC-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="129" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
