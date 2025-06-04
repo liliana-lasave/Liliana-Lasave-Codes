@@ -1,0 +1,10 @@
+maria batistela,5254153654,11/12/1961,9 de julio,graz 8241,maria@santafe.org
+jorge jefe,6352541258,23/04/1958,134 somestrasse,rosario 8531,jefe@rey.com
+jorgito physico,3524152578,28/09/1979,18 motor street,villa angela 2476,balsius@urose.edu
+julia lasave,6633552244,06/06/2020,11H raderstrasse,graz 8045,too@young.com
+craig,1236547890,1/1/2000,32 slate,ep 55116,new@mail.com
+domino mundo,2222222222,11/04/2222,2 main,graz 5678,kk@yy.com
+domino luna,2222222222,17/04/2222,2 main,graz 5678,kk@yy.com
+domino mare,2222222222,21/04/2222,2 main,graz 5678,kk@yy.com
+li po,1111111111,27/03/1979,Eva Peron 2324,Santa Fe 3000,lipo@gmail.com
+Liliana Carolina,1231231231,27/03/1989,Steyrergasse 43,Graz 8020,lcl@hotmail.com
