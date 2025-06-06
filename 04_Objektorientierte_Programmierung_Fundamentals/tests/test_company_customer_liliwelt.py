@@ -1,4 +1,4 @@
-from company_customer_liliwelt import Company_customer
+from customers.company_customer_liliwelt import Company_customer
 
 print("\n=== Testing Company customer ===\n")
 

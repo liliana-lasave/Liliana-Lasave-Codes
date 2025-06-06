@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'products')))
 from storage_liliwelt import Storage
-from products_liliwelt import PrivateLesson, GroupWorkshop, Course
+from products.products_liliwelt import PrivateLesson, GroupWorkshop, Course
 
 # Create the database connection using the correct relative path
 storage = Storage(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'liliwelt.db')))

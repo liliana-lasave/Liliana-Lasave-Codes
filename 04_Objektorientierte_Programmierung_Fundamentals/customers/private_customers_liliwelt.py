@@ -1,5 +1,5 @@
-from customer_liliwelt import Customer
-from validator_liliwelt import Validator
+from customers.customer_liliwelt import Customer
+from validation.validator_liliwelt import Validator
 from datetime import datetime
 
 

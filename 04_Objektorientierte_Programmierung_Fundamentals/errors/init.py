@@ -1,0 +1,1 @@
+# Init file for the errors package, this file makes 'errors' a Python package.

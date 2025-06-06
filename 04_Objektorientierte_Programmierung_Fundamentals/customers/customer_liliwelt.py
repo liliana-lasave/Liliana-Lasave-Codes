@@ -1,4 +1,4 @@
-from validator_liliwelt import Validator
+from validation.validator_liliwelt import Validator
 
 class Customer:
     _id_counter = 1 # class variable to auto-generate unique IDs
