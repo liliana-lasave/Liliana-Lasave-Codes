@@ -1,0 +1,12 @@
+📄 Invoice - 2025-06-06 16:29:21
+
+Customer Information:
+Name: Lili Lasave
+Email: lili@example.com
+Address: Hauptstraße 123
+Phone: 06641234567
+
+Products:
+- Private Singing Lesson: €60.00
+
+Total Amount: €57.00
