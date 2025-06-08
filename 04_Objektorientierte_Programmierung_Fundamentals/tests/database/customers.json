@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Test User",
+        "email": "testuser@example.com",
+        "phone": "1234567890",
+        "address": "123 Test Street",
+        "postcode": "12345",
+        "locality": "Testville",
+        "password": "TestPassword123"
+    },
+    {
+        "name": "Test User",
+        "email": "testuser@example.com",
+        "phone": "1234567890",
+        "address": "123 Test Street",
+        "postcode": "12345",
+        "locality": "Testville",
+        "password": "TestPassword123"
+    },
+    {
+        "name": "Test User",
+        "email": "testuser@example.com",
+        "phone": "1234567890",
+        "address": "123 Test Street",
+        "postcode": "12345",
+        "locality": "Testville",
+        "password": "TestPassword123"
+    }
+]

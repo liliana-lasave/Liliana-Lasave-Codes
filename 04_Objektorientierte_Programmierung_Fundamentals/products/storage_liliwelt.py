@@ -6,7 +6,7 @@ import sqlite3
 from errors.custom_exceptions import DatabaseError, ConnectionError, SaveError, NotFoundError
 from products.products_liliwelt import Product, PrivateLesson, GroupWorkshop, Course
 
-# Class to manage database connection and operations
+# Class to manage data connection and operations
 class Storage:
     def __init__(self, database_name):
         self.database_name = database_name

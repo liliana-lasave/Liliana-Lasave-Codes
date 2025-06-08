@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from products.products_liliwelt import PrivateLesson, GroupWorkshop, Course
 from products.storage_liliwelt import Storage
 
-# Initialize database and create tables
+# Initialize data and create tables
 storage = Storage("liliwelt.db")
 storage.create_tables()
 
@@ -57,7 +57,7 @@ print(f"✅ Course ID: {course.id}")
 assert course.id is not None and isinstance(course.id, int)
 
 # --- Load and display all products ---
-print("\n📦 Loaded products from the database:")
+print("\n📦 Loaded products from the data:")
 all_products = storage.load_all_products()
 for product in all_products:
     print("-", product.get_info())

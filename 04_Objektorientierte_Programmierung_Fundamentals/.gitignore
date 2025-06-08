@@ -1,0 +1,47 @@
+# Ignorar archivos compilados de Python
+
+__pycache__/
+
+*.py[cod]
+
+*$py.class
+ 
+# Ignorar entorno virtual (por si usás uno)
+
+venv/
+
+env/
+
+ENV/
+
+.venv/
+ 
+# Ignorar configuración de PyCharm
+
+.idea/
+ 
+# Ignorar bases de datos locales
+
+*.db
+
+*.sqlite3
+ 
+# Ignorar archivos temporales
+
+*.log
+
+*.tmp
+
+*.swp
+ 
+# Ignorar archivos de sistema (Windows/macOS)
+
+.DS_Store
+
+Thumbs.db
+ 
+# Ignorar facturas de prueba o archivos temporales de tests
+
+tests/invoice_test.txt
+
+ 

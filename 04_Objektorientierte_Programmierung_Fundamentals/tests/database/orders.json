@@ -1,0 +1,32 @@
+[
+    {
+        "customer_id": 1,
+        "items": [
+            {
+                "name": "Guitar Lesson",
+                "price": 30.0
+            },
+            {
+                "name": "Singing Workshop",
+                "price": 45.0
+            }
+        ],
+        "delivery_method": "Email",
+        "total_price": 75.0
+    },
+    {
+        "customer_id": 1,
+        "items": [
+            {
+                "name": "Guitar Lesson",
+                "price": 30.0
+            },
+            {
+                "name": "Singing Workshop",
+                "price": 45.0
+            }
+        ],
+        "delivery_method": "Email",
+        "total_price": 75.0
+    }
+]

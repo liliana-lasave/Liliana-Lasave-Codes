@@ -1,0 +1,19 @@
+[
+    {
+        "customer_id": 1,
+        "items": [
+            {
+                "id": 1,
+                "name": "Piano Class",
+                "price": 30.0
+            },
+            {
+                "id": 2,
+                "name": "Guitar Lesson",
+                "price": 45.0
+            }
+        ],
+        "delivery_method": "Standard",
+        "total_price": 75.0
+    }
+]
