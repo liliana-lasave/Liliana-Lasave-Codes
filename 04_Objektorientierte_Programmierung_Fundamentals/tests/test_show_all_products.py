@@ -1,10 +1,10 @@
 import sqlite3
 import os
 
-# Automatically find the path to the database file (go up one level from tests/)
+# Automatically find the path to the data file (go up one level from tests/)
 db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'liliwelt.db'))
 
-# Connect to the database
+# Connect to the data
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
@@ -25,5 +25,5 @@ for table in tables:
     except sqlite3.OperationalError as e:
         print(f"Error querying {table}: {e}")
 
-# Close the database connection
+# Close the data connection
 conn.close()
