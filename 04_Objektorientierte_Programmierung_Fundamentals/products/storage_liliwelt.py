@@ -1,3 +1,4 @@
+
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -117,7 +118,20 @@ class Storage:
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM private_lessons")
         rows = cursor.fetchall()
-        lessons = [PrivateLesson(*row[1:]) for row in rows]
+        lessons = []
+        for row in rows:
+            lesson = PrivateLesson(
+                name=row[1],
+                price=row[2],
+                duration=row[3],
+                level=row[4],
+                audience=row[5],
+                modality=row[6],
+                teacher_name=row[7],
+                instrument=row[8]
+            )
+            lesson.id = row[0]
+            lessons.append(lesson)
         self.disconnect()
         return lessons
 
@@ -126,7 +140,20 @@ class Storage:
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM group_workshops")
         rows = cursor.fetchall()
-        workshops = [GroupWorkshop(*row[1:]) for row in rows]
+        workshops = []
+        for row in rows:
+            workshop = GroupWorkshop(
+                name=row[1],
+                price=row[2],
+                duration=row[3],
+                level=row[4],
+                audience=row[5],
+                modality=row[6],
+                theme=row[7],
+                max_participants=row[8]
+            )
+            workshop.id = row[0]
+            workshops.append(workshop)
         self.disconnect()
         return workshops
 
@@ -135,7 +162,20 @@ class Storage:
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM courses")
         rows = cursor.fetchall()
-        courses = [Course(*row[1:]) for row in rows]
+        courses = []
+        for row in rows:
+            course = Course(
+                name=row[1],
+                price=row[2],
+                duration=row[3],
+                level=row[4],
+                audience=row[5],
+                modality=row[6],
+                num_sessions=row[7],
+                certificate=bool(row[8])
+            )
+            course.id = row[0]
+            courses.append(course)
         self.disconnect()
         return courses
 

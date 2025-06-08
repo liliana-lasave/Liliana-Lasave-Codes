@@ -1,13 +1,21 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
 import tkinter as tk
 from tkinter import ttk
 from order_view import show_order
 
+# Create tables before starting
+from products.storage_liliwelt import Storage
+Storage("liliwelt.db").create_tables()
+
 # Importing views for different sections of the app
 from login_view import show_login
 from register_view import show_register
-from product_view import show_products
-from cart_view import show_cart
-from order_view import show_order
+from product_view import ProductView
+from cart_view import open_cart_view
 
 class LiliWeltApp(tk.Tk):
     """
@@ -22,6 +30,9 @@ class LiliWeltApp(tk.Tk):
         self.title("LiliWelt Online Shop")
         self.geometry("800x600")
 
+        # Shared cart
+        self.cart = []
+
         # Create the top menu bar
         self.create_menu()
 
@@ -30,13 +41,10 @@ class LiliWeltApp(tk.Tk):
         self.container.pack(fill='both', expand=True)
 
         # Load the product view by default
-        show_products(self.container)
+        self.show_products()
 
     def create_menu(self):
-        """
-        Create the top navigation menu with user, product, and order options.
-        """
-
+        """Create the top navigation menu with user, product, and order options."""
         menubar = tk.Menu(self)
         self.config(menu=menubar)
 
@@ -47,13 +55,17 @@ class LiliWeltApp(tk.Tk):
         menubar.add_cascade(label="User", menu=user_menu)
 
         # Navigation options
-        menubar.add_command(label="Products", command=lambda: show_products(self.container))
-        menubar.add_command(label="Cart", command=lambda: show_cart(self.container))
+        menubar.add_command(label="Products", command=self.show_products)
+        menubar.add_command(label="Cart", command=open_cart_view)
         menubar.add_command(label="Checkout", command=lambda: show_order(self.container))
 
+    def show_products(self):
+        """Display the product view."""
+        for widget in self.container.winfo_children():
+            widget.destroy()
+        ProductView(self.container, self.cart).pack(fill="both", expand=True)
 
 # Entry point to start the application
 if __name__ == "__main__":
     app = LiliWeltApp()
     app.mainloop()
-
