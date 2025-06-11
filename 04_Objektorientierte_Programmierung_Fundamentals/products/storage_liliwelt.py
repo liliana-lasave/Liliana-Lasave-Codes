@@ -1,194 +1,173 @@
 
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sqlite3, hashlib, datetime
+from errors.custom_exceptions import SaveError, DatabaseError
 
-import sqlite3
-from errors.custom_exceptions import DatabaseError, ConnectionError, SaveError, NotFoundError
-from products.products_liliwelt import Product, PrivateLesson, GroupWorkshop, Course
+def _hash(pw: str) -> str:
+    return hashlib.sha256(pw.encode()).hexdigest()
 
-# Class to manage data connection and operations
 class Storage:
-    def __init__(self, database_name):
-        self.database_name = database_name
-        self.connection = None
+    """Complete storage layer: users, products, cart, orders."""
 
+    def __init__(self, db_path: str = "liliwelt.db"):
+        self.db_path = db_path
+        self.conn = None
+
+    # ---------- connection ----------
     def connect(self):
-        try:
-            self.connection = sqlite3.connect(self.database_name)
-        except sqlite3.Error as e:
-            raise ConnectionError(f"Could not connect to the database: {e}")
+        self.conn = sqlite3.connect(self.db_path)
 
     def disconnect(self):
-        if self.connection:
-            self.connection.close()
+        if self.conn:
+            self.conn.close()
+            self.conn = None
 
+    # ---------- create tables ----------
     def create_tables(self):
         try:
             self.connect()
-            cursor = self.connection.cursor()
+            cur = self.conn.cursor()
 
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS private_lessons (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    price REAL NOT NULL,
-                    duration TEXT,
-                    level TEXT,
-                    audience TEXT,
-                    modality TEXT,
-                    teacher_name TEXT,
-                    instrument TEXT
-                )
-            """)
+            cur.execute("""CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                password_hash TEXT,
+                is_company INTEGER,
+                company_id TEXT,
+                address TEXT,
+                postcode TEXT,
+                locality TEXT,
+                email TEXT,
+                phone TEXT,
+                birthdate TEXT,
+                company_number TEXT
+            )""")
 
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS group_workshops (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    price REAL NOT NULL,
-                    duration TEXT,
-                    level TEXT,
-                    audience TEXT,
-                    modality TEXT,
-                    theme TEXT,
-                    max_participants INTEGER
-                )
-            """)
+            cur.execute("CREATE TABLE IF NOT EXISTS private_lessons (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price REAL)")
+            cur.execute("CREATE TABLE IF NOT EXISTS group_workshops (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price REAL)")
+            cur.execute("CREATE TABLE IF NOT EXISTS courses (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price REAL)")
 
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS courses (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    price REAL NOT NULL,
-                    duration TEXT,
-                    level TEXT,
-                    audience TEXT,
-                    modality TEXT,
-                    num_sessions INTEGER,
-                    certificate INTEGER
-                )
-            """)
+            cur.execute("""CREATE TABLE IF NOT EXISTS cart_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                table_name TEXT,
+                product_id INTEGER,
+                name TEXT,
+                price REAL,
+                quantity INTEGER
+            )""")
 
-            self.connection.commit()
+            cur.execute("""CREATE TABLE IF NOT EXISTS orders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                datetime TEXT,
+                user_id INTEGER,
+                is_company INTEGER,
+                method TEXT,
+                total REAL
+            )""")
+
+            cur.execute("""CREATE TABLE IF NOT EXISTS order_items (
+                order_id INTEGER,
+                table_name TEXT,
+                product_id INTEGER,
+                quantity INTEGER,
+                price REAL
+            )""")
+
+            self.conn.commit()
+        finally:
             self.disconnect()
-        except sqlite3.Error as e:
-            raise SaveError(f"Failed to create tables: {e}")
 
-    def save_product(self, product):
+    # ---------- helper ----------
+    def _fetch(self, query, params=()):
         try:
             self.connect()
-            cursor = self.connection.cursor()
-
-            if isinstance(product, PrivateLesson):
-                cursor.execute("""
-                    INSERT INTO private_lessons (name, price, duration, level, audience, modality, teacher_name, instrument)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (product.name, product.price, product.duration, product.level,
-                      product.audience, product.modality, product.teacher_name, product.instrument))
-                product.id = cursor.lastrowid
-
-            elif isinstance(product, GroupWorkshop):
-                cursor.execute("""
-                    INSERT INTO group_workshops (name, price, duration, level, audience, modality, theme, max_participants)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (product.name, product.price, product.duration, product.level,
-                      product.audience, product.modality, product.theme, product.max_participants))
-                product.id = cursor.lastrowid
-
-            elif isinstance(product, Course):
-                cursor.execute("""
-                    INSERT INTO courses (name, price, duration, level, audience, modality, num_sessions, certificate)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (product.name, product.price, product.duration, product.level,
-                      product.audience, product.modality, product.num_sessions, int(product.certificate)))
-                product.id = cursor.lastrowid
-
-            else:
-                raise ValueError("Unknown product type")
-
-            self.connection.commit()
+            cur = self.conn.cursor()
+            cur.execute(query, params)
+            return cur.fetchall()
+        finally:
             self.disconnect()
 
-        except sqlite3.Error as e:
-            raise SaveError(f"Failed to save product: {e}")
-
-    def load_all_private_lessons(self):
-        self.connect()
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM private_lessons")
-        rows = cursor.fetchall()
-        lessons = []
-        for row in rows:
-            lesson = PrivateLesson(
-                name=row[1],
-                price=row[2],
-                duration=row[3],
-                level=row[4],
-                audience=row[5],
-                modality=row[6],
-                teacher_name=row[7],
-                instrument=row[8]
+    # ---------- user management ----------
+    def register_user(self, *, username, password, address, postcode, locality,
+                      email, phone, is_company, company_number=None, birthdate=None):
+        try:
+            self.connect()
+            cur = self.conn.cursor()
+            cur.execute(
+                """INSERT INTO users
+                    (username, password_hash, is_company, company_id, address, postcode,
+                     locality, email, phone, birthdate, company_number)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                (username, _hash(password), int(is_company), company_number,
+                 address, postcode, locality, email, phone, birthdate, company_number)
             )
-            lesson.id = row[0]
-            lessons.append(lesson)
-        self.disconnect()
-        return lessons
+            self.conn.commit()
+        except sqlite3.IntegrityError:
+            self.disconnect()
+            raise SaveError("Username already exists")
+        finally:
+            self.disconnect()
+
+    def authenticate(self, username, password):
+        rows = self._fetch(
+            "SELECT id, is_company, company_id FROM users WHERE username=? AND password_hash=?",
+            (username, _hash(password))
+        )
+        return rows[0] if rows else None
+
+    # ---------- product loaders ----------
+    def load_all_private_lessons(self):
+        rows = self._fetch("SELECT id,name,price FROM private_lessons")
+        return [dict(table='private_lessons', id=r[0], name=r[1], price=r[2]) for r in rows]
 
     def load_all_group_workshops(self):
-        self.connect()
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM group_workshops")
-        rows = cursor.fetchall()
-        workshops = []
-        for row in rows:
-            workshop = GroupWorkshop(
-                name=row[1],
-                price=row[2],
-                duration=row[3],
-                level=row[4],
-                audience=row[5],
-                modality=row[6],
-                theme=row[7],
-                max_participants=row[8]
-            )
-            workshop.id = row[0]
-            workshops.append(workshop)
-        self.disconnect()
-        return workshops
+        rows = self._fetch("SELECT id,name,price FROM group_workshops")
+        return [dict(table='group_workshops', id=r[0], name=r[1], price=r[2]) for r in rows]
 
     def load_all_courses(self):
-        self.connect()
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM courses")
-        rows = cursor.fetchall()
-        courses = []
-        for row in rows:
-            course = Course(
-                name=row[1],
-                price=row[2],
-                duration=row[3],
-                level=row[4],
-                audience=row[5],
-                modality=row[6],
-                num_sessions=row[7],
-                certificate=bool(row[8])
-            )
-            course.id = row[0]
-            courses.append(course)
-        self.disconnect()
-        return courses
+        rows = self._fetch("SELECT id,name,price FROM courses")
+        return [dict(table='courses', id=r[0], name=r[1], price=r[2]) for r in rows]
 
     def load_all_products(self):
-        return (
-            self.load_all_private_lessons()
-            + self.load_all_group_workshops()
-            + self.load_all_courses()
-        )
+        return ( self.load_all_private_lessons()
+               + self.load_all_group_workshops()
+               + self.load_all_courses() )
 
-if __name__ == "__main__":
-    storage = Storage("../liliwelt.db")
-    storage.create_tables()
-    products = storage.load_all_products()
-    for p in products:
-        print(p.get_info())
+    # ---------- cart ----------
+    def load_cart(self):
+        rows = self._fetch("SELECT table_name, product_id, name, price, quantity FROM cart_items")
+        return [dict(table=r[0], id=r[1], name=r[2], price=r[3], quantity=r[4]) for r in rows]
+
+    def save_cart(self, items):
+        try:
+            self.connect()
+            cur = self.conn.cursor()
+            cur.execute("DELETE FROM cart_items")
+            for it in items:
+                cur.execute(
+                    "INSERT INTO cart_items (table_name, product_id, name, price, quantity) VALUES (?,?,?,?,?)",
+                    (it['table'], it['id'], it['name'], it['price'], it['quantity'])
+                )
+            self.conn.commit()
+        finally:
+            self.disconnect()
+
+    # ---------- orders ----------
+    def save_order(self, cart, user_id, is_company, method, total):
+        try:
+            self.connect()
+            cur = self.conn.cursor()
+            dt = datetime.datetime.now().isoformat(timespec='seconds')
+            cur.execute(
+                "INSERT INTO orders (datetime, user_id, is_company, method, total) VALUES (?,?,?,?,?)",
+                (dt, user_id, int(is_company), method, total)
+            )
+            oid = cur.lastrowid
+            for it in cart:
+                cur.execute(
+                    "INSERT INTO order_items (order_id, table_name, product_id, quantity, price) VALUES (?,?,?,?,?)",
+                    (oid, it['table'], it['id'], it['quantity'], it['price'])
+                )
+            self.conn.commit()
+            return oid
+        finally:
+            self.disconnect()
