@@ -2,15 +2,13 @@ import tkinter as tk
 
 from tkinter import ttk
 
-# Importar módulos una sola vez para evitar ciclos
+from cart_frame import CartFrame
 
-import cart_frame as cf
-
-import payment_frame as pf
+import payment_frame as pf  # import alias to avoid circular
 
 
 class CheckoutFrame(ttk.Frame):
-    """Paso de revisión final antes de pagar"""
+    """Pantalla de revisión final antes de pagar"""
 
     def __init__(self, master, app):
         super().__init__(master, padding=10)
@@ -54,19 +52,15 @@ class CheckoutFrame(ttk.Frame):
 
         ttk.Button(
 
-            nav,
+            nav, text="Back",
 
-            text="Back",
-
-            command=lambda: app.show_frame(cf.CartFrame)
+            command=lambda: app.show_frame(CartFrame)
 
         ).pack(side="left", padx=5)
 
         ttk.Button(
 
-            nav,
-
-            text="Next",
+            nav, text="Next",
 
             command=lambda: app.show_frame(pf.PaymentFrame, total=self.total)
 
