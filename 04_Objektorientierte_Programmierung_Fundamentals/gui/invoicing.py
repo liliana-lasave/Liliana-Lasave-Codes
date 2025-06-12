@@ -1,5 +1,3 @@
-# gui/invoicing.py
-
 import os, datetime, smtplib, ssl
 
 from email.message import EmailMessage
@@ -11,24 +9,16 @@ from reportlab.pdfgen import canvas
 INVOICE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "invoices"))
 
 
-# ---------- 1. Generate PDF ----------
+# ---------------------------------------------------------------------------
 
 def create_pdf(order_id: int, customer: dict, items: list[dict], total: float) -> str:
-    """
-
-    customer = {"name": "...", "email": "..."}
-
-    items    = [{"name": "...", "qty": 1, "price": 30.0}, ...]
-
-    Returns the path of the generated PDF.
-
-    """
+    """Generate PDF invoice and return its absolute path."""
 
     os.makedirs(INVOICE_DIR, exist_ok=True)
 
-    file_path = os.path.join(INVOICE_DIR, f"invoice_{order_id}.pdf")
+    pdf_path = os.path.join(INVOICE_DIR, f"invoice_{order_id}.pdf")
 
-    c = canvas.Canvas(file_path, pagesize=A4)
+    c = canvas.Canvas(pdf_path, pagesize=A4)
 
     w, h = A4
 
@@ -52,65 +42,69 @@ def create_pdf(order_id: int, customer: dict, items: list[dict], total: float) -
 
     # Table header
 
-    c.drawString(50, h - 165, "Description")
+    y = h - 160
 
-    c.drawString(300, h - 165, "Qty")
+    c.setFont("Helvetica-Bold", 10)
 
-    c.drawString(360, h - 165, "Price")
+    c.drawString(50, y, "Item")
 
-    y = h - 180
+    c.drawString(250, y, "Qty")
+
+    c.drawString(350, y, "Price")
 
     # Items
 
-    for it in items:
-        c.drawString(50, y, it["name"])
+    c.setFont("Helvetica", 10)
 
-        c.drawRightString(330, y, str(it["qty"]))
+    y -= 15
 
-        c.drawRightString(420, y, f"€{it['price']:.2f}")
+    for item in items:
+        c.drawString(50, y, item["name"])
+
+        c.drawString(250, y, str(item["qty"]))  # <-- usa 'qty'
+
+        c.drawString(350, y, f"{item['price']:.2f} EUR")
 
         y -= 15
 
     # Total
 
-    c.setFont("Helvetica-Bold", 12)
+    y -= 10
 
-    c.drawRightString(420, y - 10, f"Total: €{total:.2f}")
+    c.setFont("Helvetica-Bold", 10)
 
-    c.showPage()
+    c.drawString(50, y, f"Total: {total:.2f} EUR")
 
     c.save()
 
-    return file_path
+    return pdf_path
 
 
-# ---------- 2. Send e-mail ----------
+# ---------------------------------------------------------------------------
 
 def send_email(pdf_path: str, customer: dict):
-    """
-
-    Send invoice to customer via SMTP
-
-    It requires environment variables:
-
-        MAIL_USER -> SMTP account (e.g. Gmail)
-
-        MAIL_PW   -> app-password
-
-    """
+    """Send invoice as e-mail attachment. SMTP settings read from env vars."""
 
     smtp_user = os.getenv("MAIL_USER")
 
     smtp_pw = os.getenv("MAIL_PW")
 
     if not smtp_user or not smtp_pw:
-        raise RuntimeError("MAIL_USER o MAIL_PW no definidos")
+        raise RuntimeError("MAIL_USER or MAIL_PW not set in environment")
+
+    host = os.getenv("MAIL_HOST", "smtp.gmail.com")
+
+    port = int(os.getenv("MAIL_PORT", "465"))
+
+    secure = os.getenv("MAIL_SECURE", "SSL").upper()
+
+    # Build message
 
     msg = EmailMessage()
 
-    msg["Subject"] = "Your LiliWelt invoice"
+    msg["Subject"] = f"Invoice #{os.path.basename(pdf_path)} – LiliWelt Academy"
 
-    msg["From"] = smtp_user
+    msg["From"] = f"LiliWelt Academy <{smtp_user}>"
 
     msg["To"] = customer["email"]
 
@@ -122,25 +116,43 @@ Thank you for your purchase! Your invoice is attached as a PDF.
 
 Best regards,
 
-LiliWelt Team"""
+LiliWelt Team
 
-    )
+""")
 
     with open(pdf_path, "rb") as f:
+
         msg.add_attachment(f.read(),
 
-                           maintype="application",
-
-                           subtype="pdf",
+                           maintype="application", subtype="pdf",
 
                            filename=os.path.basename(pdf_path))
 
-    # Gmail SSL (change host/port for other providers)
+    print(f"DEBUG-SMTP ➜ connecting to {host}:{port} ({secure})")
 
     context = ssl.create_default_context()
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(smtp_user, smtp_pw)
+    if secure == "SSL":
 
-        server.send_message(msg)
+        with smtplib.SMTP_SSL(host, port, context=context) as s:
+
+            s.login(smtp_user, smtp_pw)
+
+            s.send_message(msg)
+
+    elif secure == "STARTTLS":
+
+        with smtplib.SMTP(host, port) as s:
+
+            s.starttls(context=context)
+
+            s.login(smtp_user, smtp_pw)
+
+            s.send_message(msg)
+
+    else:
+
+        raise ValueError("MAIL_SECURE must be 'SSL' or 'STARTTLS'")
+
+    print("DEBUG-SMTP ✔ message sent to", customer["email"])
 
