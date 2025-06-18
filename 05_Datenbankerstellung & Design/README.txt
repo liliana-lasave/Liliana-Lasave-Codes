@@ -1,0 +1,1 @@
+The ZIP file contains the complete database project “music_collection”, consisting of the SQL script for creating the tables and the Drawio diagram with all relations and constraints (including named foreign keys such as ‘from_album’ and “from_interpreter”), as required in the task.
