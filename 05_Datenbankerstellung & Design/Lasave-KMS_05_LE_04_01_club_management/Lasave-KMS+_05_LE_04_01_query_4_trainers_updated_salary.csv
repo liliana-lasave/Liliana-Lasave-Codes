@@ -1,0 +1,9 @@
+trainer_id,first_name,last_name,trainer_description,worked_hours,salary
+1,Laura,Martínez,"Experienced volleyball coach",1.75,3500.00
+2,Luis,García,"Experienced basketball coach",2.50,3437.50
+3,Valentina,Flores,"Novice volleyball assistant",2.50,2250.00
+4,Ricardo,Jiménez,"Experienced futsal coach",2.25,3625.00
+5,Martina,López,"Experienced curling coach",1.25,3375.00
+6,Andrés,Ramírez,"Novice basketball assistant",1.50,2375.00
+7,Pedro,Castro,"Novice curling coach",0.00,2500.00
+8,Elena,Sánchez,"Experienced futsal coach",0.00,3500.00
