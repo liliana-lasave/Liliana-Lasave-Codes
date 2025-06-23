@@ -55,8 +55,13 @@ ORDER BY
 	p.last_name, tr.last_name;
     
 --
+-- Display all information from the 'trainers' table to review trainer records.
+SELECT * FROM club_management_final.trainers;
+
 -- Query 4: Increase all trainers' salaries by 25%
 UPDATE trainers
 SET salary = salary + (salary * 0.25)
 WHERE trainer_id > 0;
 
+-- Verify that the salaries of all trainers have been successfully increased by 25%.
+SELECT * FROM club_management_final.trainers;

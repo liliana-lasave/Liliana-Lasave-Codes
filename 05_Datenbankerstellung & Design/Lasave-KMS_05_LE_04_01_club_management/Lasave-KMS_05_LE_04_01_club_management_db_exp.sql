@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
--- Host: localhost    Database: club_management
+-- Host: localhost    Database: club_management_final
 -- ------------------------------------------------------
 -- Server version	8.0.42
 
@@ -76,14 +76,16 @@ DROP TABLE IF EXISTS `player_team`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `player_team` (
+  `player_team_id` int NOT NULL AUTO_INCREMENT,
   `player_id` int NOT NULL,
   `team_id` int NOT NULL,
   `start_date` date DEFAULT NULL,
-  PRIMARY KEY (`player_id`,`team_id`),
-  KEY `fk_team_id_player_team_from_teams` (`team_id`),
-  CONSTRAINT `fk_player_id_player_team_from_players` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`),
-  CONSTRAINT `fk_team_id_player_team_from_teams` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`player_team_id`),
+  KEY `player_id` (`player_id`),
+  KEY `team_id` (`team_id`),
+  CONSTRAINT `player_team_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`),
+  CONSTRAINT `player_team_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +94,7 @@ CREATE TABLE `player_team` (
 
 LOCK TABLES `player_team` WRITE;
 /*!40000 ALTER TABLE `player_team` DISABLE KEYS */;
-INSERT INTO `player_team` VALUES (1,1,'2023-09-10'),(1,12,'2024-03-01'),(2,1,'2023-10-12'),(2,11,'2024-03-12'),(3,2,'2023-11-01'),(3,13,'2024-03-15'),(4,2,'2023-11-15'),(4,12,'2024-03-18'),(5,3,'2024-01-05'),(5,13,'2024-04-01'),(6,3,'2024-01-06'),(6,14,'2024-04-10'),(7,4,'2024-02-01'),(7,14,'2024-04-05'),(8,4,'2024-02-02'),(9,5,'2023-12-10'),(9,11,'2024-02-05'),(10,6,'2024-01-20'),(11,7,'2023-10-30'),(12,8,'2023-09-25'),(13,9,'2023-08-14'),(14,10,'2024-03-03');
+INSERT INTO `player_team` VALUES (23,1,1,'2023-09-10'),(24,2,1,'2023-10-12'),(25,3,2,'2023-11-01'),(26,4,2,'2023-11-15'),(27,5,3,'2024-01-05'),(28,6,3,'2024-01-06'),(29,7,4,'2024-02-01'),(30,8,4,'2024-02-02'),(31,9,5,'2023-12-10'),(32,10,6,'2024-01-20'),(33,11,7,'2023-10-30'),(34,12,8,'2023-09-25'),(35,13,9,'2023-08-14'),(36,14,10,'2024-03-03'),(37,1,12,'2024-03-01'),(38,2,11,'2024-03-12'),(39,3,13,'2024-03-15'),(40,4,12,'2024-03-18'),(41,5,13,'2024-04-01'),(42,6,14,'2024-04-10'),(43,7,14,'2024-04-05'),(44,9,11,'2024-02-05');
 /*!40000 ALTER TABLE `player_team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,8 +107,8 @@ DROP TABLE IF EXISTS `players`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `players` (
   `player_id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -154,15 +156,17 @@ DROP TABLE IF EXISTS `trainer_education`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trainer_education` (
+  `trainer_education_id` int NOT NULL AUTO_INCREMENT,
   `trainer_id` int NOT NULL,
   `education_id` int NOT NULL,
   `completion_date` date DEFAULT NULL,
   `certificate_url` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`trainer_id`,`education_id`),
-  KEY `fk_education_id_trainer_education_from_education` (`education_id`),
-  CONSTRAINT `fk_education_id_trainer_education_from_education` FOREIGN KEY (`education_id`) REFERENCES `education` (`education_id`),
-  CONSTRAINT `fk_trainer_id_trainer_education_from_trainers` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`trainer_education_id`),
+  KEY `trainer_id` (`trainer_id`),
+  KEY `education_id` (`education_id`),
+  CONSTRAINT `trainer_education_ibfk_1` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`),
+  CONSTRAINT `trainer_education_ibfk_2` FOREIGN KEY (`education_id`) REFERENCES `education` (`education_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +175,7 @@ CREATE TABLE `trainer_education` (
 
 LOCK TABLES `trainer_education` WRITE;
 /*!40000 ALTER TABLE `trainer_education` DISABLE KEYS */;
-INSERT INTO `trainer_education` VALUES (1,1,'2023-11-10','https://certificates.example.com/trainer1_volleyball.pdf'),(2,2,'2024-01-05','https://certificates.example.com/trainer2_basketball.pdf'),(3,3,'2023-12-15','https://certificates.example.com/trainer3_futsal.pdf'),(4,4,'2024-02-01','https://certificates.example.com/trainer4_curling.pdf'),(5,1,'2023-10-20','https://certificates.example.com/trainer5_volleyball.pdf'),(6,2,'2023-12-28','https://certificates.example.com/trainer6_basketball.pdf'),(7,1,'2024-01-18','https://certificates.example.com/trainer9_volleyball.pdf'),(7,3,'2024-01-14','https://certificates.example.com/trainer7_futsal.pdf'),(8,2,'2024-03-03','https://certificates.example.com/trainer10_basketball.pdf'),(8,4,'2024-02-20','https://certificates.example.com/trainer8_curling.pdf');
+INSERT INTO `trainer_education` VALUES (1,1,1,'2023-11-10','https://certificates.example.com/trainer1_volleyball.pdf'),(2,2,2,'2024-01-05','https://certificates.example.com/trainer2_basketball.pdf'),(3,3,3,'2023-12-15','https://certificates.example.com/trainer3_futsal.pdf'),(4,4,4,'2024-02-01','https://certificates.example.com/trainer4_curling.pdf'),(5,5,1,'2023-10-20','https://certificates.example.com/trainer5_volleyball.pdf'),(6,6,2,'2023-12-28','https://certificates.example.com/trainer6_basketball.pdf'),(7,7,3,'2024-01-14','https://certificates.example.com/trainer7_futsal.pdf'),(8,8,4,'2024-02-20','https://certificates.example.com/trainer8_curling.pdf'),(9,7,1,'2024-01-18','https://certificates.example.com/trainer9_volleyball.pdf'),(10,8,2,'2024-03-03','https://certificates.example.com/trainer10_basketball.pdf');
 /*!40000 ALTER TABLE `trainer_education` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,14 +187,16 @@ DROP TABLE IF EXISTS `trainer_team`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trainer_team` (
+  `trainer_team_id` int NOT NULL AUTO_INCREMENT,
   `trainer_id` int NOT NULL,
   `team_id` int NOT NULL,
   `start_date` date DEFAULT NULL,
-  PRIMARY KEY (`trainer_id`,`team_id`),
-  KEY `fk_team_id_trainer_team_from_teams` (`team_id`),
-  CONSTRAINT `fk_team_id_trainer_team_from_teams` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`),
-  CONSTRAINT `fk_trainer_id_trainer_team_from_trainers` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`trainer_team_id`),
+  KEY `trainer_id` (`trainer_id`),
+  KEY `team_id` (`team_id`),
+  CONSTRAINT `trainer_team_ibfk_1` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`),
+  CONSTRAINT `trainer_team_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +205,7 @@ CREATE TABLE `trainer_team` (
 
 LOCK TABLES `trainer_team` WRITE;
 /*!40000 ALTER TABLE `trainer_team` DISABLE KEYS */;
-INSERT INTO `trainer_team` VALUES (1,1,'2024-01-15'),(1,11,'2024-02-18'),(2,2,'2024-02-10'),(2,12,'2024-03-01'),(3,3,'2023-11-20'),(3,13,'2023-12-15'),(4,4,'2023-12-01'),(4,14,'2024-02-25'),(5,2,'2024-02-22'),(5,5,'2024-01-05'),(6,3,'2024-03-05'),(6,6,'2024-03-12'),(7,7,'2023-10-05'),(7,9,'2024-02-14'),(8,8,'2024-01-22'),(8,10,'2024-01-30');
+INSERT INTO `trainer_team` VALUES (1,1,1,'2024-01-15'),(2,2,2,'2024-02-10'),(3,3,3,'2023-11-20'),(4,4,4,'2023-12-01'),(5,5,5,'2024-01-05'),(6,6,6,'2024-03-12'),(7,7,7,'2023-10-05'),(8,8,8,'2024-01-22'),(9,7,9,'2024-02-14'),(10,8,10,'2024-01-30'),(11,1,11,'2024-02-18'),(12,2,12,'2024-03-01'),(13,3,13,'2023-12-15'),(14,4,14,'2024-02-25'),(15,5,2,'2024-02-22'),(16,6,3,'2024-03-05');
 /*!40000 ALTER TABLE `trainer_team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -247,12 +253,12 @@ CREATE TABLE `training_sessions` (
   `team_id` int DEFAULT NULL,
   `place_id` int NOT NULL,
   PRIMARY KEY (`session_id`),
-  UNIQUE KEY `unique_trainer_team_date` (`trainer_id`,`team_id`,`session_date`,`start_time`),
-  KEY `fk_team_id_training_sessions_from_teams` (`team_id`),
-  KEY `fk_place_id_training_sessions_from_places` (`place_id`),
-  CONSTRAINT `fk_place_id_training_sessions_from_places` FOREIGN KEY (`place_id`) REFERENCES `places` (`place_id`),
-  CONSTRAINT `fk_team_id_training_sessions_from_teams` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`),
-  CONSTRAINT `fk_trainer_id_training_sessions_from_trainers` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`),
+  UNIQUE KEY `trainer_id` (`trainer_id`,`team_id`,`session_date`,`start_time`),
+  KEY `team_id` (`team_id`),
+  KEY `place_id` (`place_id`),
+  CONSTRAINT `training_sessions_ibfk_1` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`trainer_id`),
+  CONSTRAINT `training_sessions_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`),
+  CONSTRAINT `training_sessions_ibfk_3` FOREIGN KEY (`place_id`) REFERENCES `places` (`place_id`),
   CONSTRAINT `training_sessions_chk_1` CHECK ((`duration_minutes` >= 30))
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -276,4 +282,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-22  5:10:48
+-- Dump completed on 2025-06-23 14:06:02
