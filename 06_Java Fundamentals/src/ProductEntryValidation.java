@@ -59,8 +59,8 @@ public class ProductEntryValidation {
             System.out.println("-----------------------------------------------");
         }
 
-    input.nextLine();   // Clear buffer to avoid skipping nextLine() after nextInt()/nextDouble()
-    return value;
+        input.nextLine();   // Clear buffer to avoid skipping nextLine() after nextInt()/nextDouble()
+        return value;
     }
 
     // Keep asking the user for a valid price until it is the case
