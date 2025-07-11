@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Lasave_KMS_1_05_LE_04_02 {
+public class Lasave_KMS_06_LE_04_02 {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
