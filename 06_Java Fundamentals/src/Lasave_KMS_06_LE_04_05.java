@@ -12,7 +12,7 @@ public class Lasave_KMS_06_LE_04_05 {
         double number2 = parseInput(input2);
 
         // Read operator
-        String operator = readOperator(input);
+        String operator = readInput(input, "If you want to add, subtract, multiply or divide, enter +, * or / respectively: ");
 
         // Calculator
         double result = calculate(number1, number2, operator);
@@ -34,11 +34,6 @@ public class Lasave_KMS_06_LE_04_05 {
         return Double.parseDouble(inputString);
     }
 
-    // Method readOperator
-    public static String readOperator(Scanner input) {
-        System.out.print("If you want to add, subtract, multiply or divide, enter +, * or / respectively: ");
-        return input.nextLine();
-    }
 
     // Method calculate
     public static double calculate(double number1, double number2, String operator) {
