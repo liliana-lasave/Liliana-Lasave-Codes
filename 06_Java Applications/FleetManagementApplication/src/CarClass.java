@@ -1,14 +1,21 @@
 public class CarClass extends VehicleClass {
+    String model;
+    int year;
+    int fuelAmount = 0;
+    int mileage = 0;
     String engineType;      // Attribute of the class CarClass
     static int numberOfCars = 0;    // static because it is a class variable
 
 
     // Constructor
     public CarClass(String modelIn, int yearIn, String engineTypeIn) {     // ("temporary variables that only belong to the constructor")
-        this.model = modelIn;
-        this.year = yearIn;
+        super(modelIn, yearIn);
+        //this.model = modelIn;
+        //this.year = yearIn;
         this.engineType = engineTypeIn;
         numberOfCars++;
+
+
     }
 
     // Getter for CarClass

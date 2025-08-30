@@ -1,4 +1,8 @@
 public class MotorcycleClass extends VehicleClass {
+    String model;
+    int year;
+    int fuelAmount = 0;
+    int mileage = 0;
     int speed;      // Attribute of the class MotorcycleClass
     String color;
     static int numberOfMotorcycles = 0;    // static because it is a class variable
@@ -6,8 +10,9 @@ public class MotorcycleClass extends VehicleClass {
 
 // Constructor
 public MotorcycleClass(String modelIn, int yearIn, int speedIn, String colorIn) {     // ("temporary variables that only belong to the constructor")
-    this.model = modelIn;
-    this.year = yearIn;
+    super(modelIn, yearIn);
+    //this.model = modelIn;
+    //this.year = yearIn;
     this.speed = speedIn;
     this.color = colorIn;
     numberOfMotorcycles++;
