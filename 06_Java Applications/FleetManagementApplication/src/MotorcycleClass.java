@@ -1,37 +1,45 @@
 public class MotorcycleClass extends VehicleClass {
-    String model;
-    int year;
-    int fuelAmount = 0;
-    int mileage = 0;
-    int speed;      // Attribute of the class MotorcycleClass
-    String color;
-    static int numberOfMotorcycles = 0;    // static because it is a class variable
+    private String color;
+    private static int numberOfMotorcycles = 0;
 
+    public MotorcycleClass(String modelIn, int yearIn, String colorIn) {
+        super(modelIn, yearIn);
+        this.color = (colorIn == null || colorIn.trim().isEmpty())
+                ? "UNKNOWN" : colorIn.trim();
+        numberOfMotorcycles++;
+    }
 
-// Constructor
-public MotorcycleClass(String modelIn, int yearIn, int speedIn, String colorIn) {     // ("temporary variables that only belong to the constructor")
-    super(modelIn, yearIn);
-    //this.model = modelIn;
-    //this.year = yearIn;
-    this.speed = speedIn;
-    this.color = colorIn;
-    numberOfMotorcycles++;
+    @Override
+    public String type() { return "MOTORCYCLE"; }
+
+    // TYPE,MODEL,YEAR,FUEL,MILEAGE,EXTRA1,EXTRA2
+    @Override
+    public String toCsvRow() {
+        return type() + "," + getModel() + "," + getYear() + ","
+                + getFuelAmount() + "," + getMileage() + ","
+                + color + ",";
+    }
+
+    public String getColor() { return color; }
+    public void setColor(String color) {
+        this.color = (color == null || color.trim().isEmpty())
+                ? "UNKNOWN" : color.trim();
+    }
+
+    public static int getNumberOfMotorcycles() { return numberOfMotorcycles; }
+
+    public void showVehicleInfo() {
+        System.out.println("I have a " + getYear() + " " + getModel() + " motorcycle.");
+    }
+
+    @Override
+    public String toString() {
+        return "MotorcycleClass{" +
+                "model='" + getModel() + '\'' +
+                ", year=" + getYear() +
+                ", fuelAmount=" + getFuelAmount() +
+                ", mileage=" + getMileage() +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }
-
-// Getter for MotorcycleClass
-public String getModel() {
-    return model;
-}
-
-// Getter for MotorcycleClass
-public int getYear() {
-    return year;
-}
-
-// Method to see info of the motorcycle
-public void showVehicleInfo() {
-    System.out.println("I have a "+ model +" motorcycle"+" from " + year +".");
-}
-
-}
-

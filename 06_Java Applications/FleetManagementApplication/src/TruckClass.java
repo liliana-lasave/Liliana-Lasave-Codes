@@ -1,37 +1,45 @@
 public class TruckClass extends VehicleClass {
-    String model;
-    int year;
-    int fuelAmount = 0;
-    int mileage = 0;
-    String cargoType;      // Attribute of the class Truck
-    static int numberOfTrucks = 0;  // static because it is a class variable
+    private String cargoType;          // e.g., "10 Ton"
+    private static int numberOfTrucks = 0;
 
-    // Constructor
-    public TruckClass(String modelIn, int yearIn, String cargoTypeIn) {     // ("temporary variables that only belong to the constructor")
+    public TruckClass(String modelIn, int yearIn, String cargoTypeIn) {
         super(modelIn, yearIn);
-        //this.model = modelIn;
-        //this.year = yearIn;
-        this.cargoType = cargoTypeIn;
+        this.cargoType = (cargoTypeIn == null || cargoTypeIn.trim().isEmpty())
+                ? "UNKNOWN" : cargoTypeIn.trim();
         numberOfTrucks++;
-
-        }
-
-    // Getter for CarClass
-    public String getModel() {
-        return model;
-        }
-
-    // Getter for TruckClass
-    public String getcargoType() {
-        return cargoType;
     }
 
-    // Method to see info of the truck
+    @Override
+    public String type() { return "TRUCK"; }
+
+    // TYPE,MODEL,YEAR,FUEL,MILEAGE,EXTRA1,EXTRA2
+    @Override
+    public String toCsvRow() {
+        return type() + "," + getModel() + "," + getYear() + ","
+                + getFuelAmount() + "," + getMileage() + ","
+                + cargoType + ",";
+    }
+
+    public String getCargoType() { return cargoType; }
+    public void setCargoType(String cargoType) {
+        this.cargoType = (cargoType == null || cargoType.trim().isEmpty())
+                ? "UNKNOWN" : cargoType.trim();
+    }
+
+    public static int getNumberOfTrucks() { return numberOfTrucks; }
+
     public void showVehicleInfo() {
-        System.out.println("I have a "+ model +" truck"+" with a maximum capacity of " + cargoType +" Tons.");
+        System.out.println("I have a " + getModel() + " truck with a capacity of " + cargoType + ".");
     }
 
+    @Override
+    public String toString() {
+        return "TruckClass{" +
+                "model='" + getModel() + '\'' +
+                ", year=" + getYear() +
+                ", fuelAmount=" + getFuelAmount() +
+                ", mileage=" + getMileage() +
+                ", cargoType='" + cargoType + '\'' +
+                '}';
+    }
 }
-
-
-
