@@ -1,4 +1,4 @@
-// Maintain the information for a team as well as its player list. Allow for that adding/removal of a player and printing the entire team info including players.
+// Maintains the information for a team as well as its player list. Allow for that adding/removal of a player and printing the entire team info including players.
 
 import java.util.ArrayList;
 
@@ -18,12 +18,12 @@ public class TeamClass {
         System.out.println("There is a team called "+ teamName + ", that has a coach named " + coachName + ".");
     }
 
-    // Method to add players to the ArrayList
+    // Method to add players to the playerList
     void addPlayer(PlayerClass player) {
         playerList.add(player);
     }
 
-    // Method to print the list of players
+    // Method to print the list of players using the player´s print method
     public void printPlayerList() {
         System.out.println("\nList of players in the team " + teamName + ":");
 
@@ -43,12 +43,12 @@ public class TeamClass {
     // Delete an individual player from the teams players list, if not found, print error message
     public void deletePlayerbyName(String playerNameToRemove) {
         for(int i = 0; i < playerList.size(); i++) {
-            PlayerClass playerItem = playerList.get(i);
+            PlayerClass playerItem = playerList.get(i);     // retrieves the item "i"
 
             if (playerItem.playerName.equals(playerNameToRemove)) {     // Check if the names are exactly the same
-                playerList.remove(i);
+                playerList.remove(i);                                   // remove the i´th item from the player list
                 System.out.println("The player with the name " + playerNameToRemove + " was removed.");
-                return;                  // stop searching (we already removed the player)
+                return;                  // get out of the method, stop searching (we already removed the player)
             }
         }
     System.out.println("There is no player with the name " + playerNameToRemove + " in our club.");

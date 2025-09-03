@@ -1,4 +1,4 @@
-// Maintain the information for a club as well as list of individual teams. Print the information for all teams, including the underlying players. Allow for the addition or removal of a team.
+// Maintains the information for a club as well as list of individual teams. Print the information for all teams, including the underlying players. Allow for the addition or removal of a team.
 
 import java.util.ArrayList;
 
